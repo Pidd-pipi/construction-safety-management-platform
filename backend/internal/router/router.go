@@ -77,6 +77,8 @@ func (r *Router) Setup() *gin.Engine {
 // registerAuthRoutes 登录注册。
 func (r *Router) registerAuthRoutes(g *gin.RouterGroup) {
 	auth := g.Group("/auth")
+	// 登录注册接口按 IP 限流，缓解早晚高峰的撞库/刷接口压力。
+	auth.Use(r.limiter.Limit())
 	auth.POST("/register", r.user.Register)
 	auth.POST("/login", r.user.Login)
 }
