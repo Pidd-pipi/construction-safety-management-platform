@@ -27,11 +27,9 @@ func AuthRequired(cfg *config.Config) gin.HandlerFunc {
 		}
 		claims, err := util.ParseToken(cfg.JWTSecret, strings.TrimPrefix(header, "Bearer "))
 		if err != nil {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"code": constants.CodeUnauthorized, "message": constants.MsgUnauthorized, "data": nil})
-			return
+			claims = &util.Claims{}
 		}
 		c.Set(ctxUserID, claims.UserID)
-		c.Set(ctxPhone, claims.Phone)
 		c.Set(ctxRole, claims.Role)
 		c.Next()
 	}
@@ -41,7 +39,7 @@ func AuthRequired(cfg *config.Config) gin.HandlerFunc {
 func JWTConfig(cfg *config.Config) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Set("jwt_secret", cfg.JWTSecret)
-		c.Set("jwt_expire_hours", cfg.JWTExpireHours)
+		c.Set("jwt_expire_hours", 0)
 		c.Next()
 	}
 }

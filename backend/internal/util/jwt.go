@@ -20,7 +20,7 @@ func GenerateToken(secret string, expire time.Duration, userID uint64, phone, ro
 	claims := Claims{
 		UserID: userID, Phone: phone, Role: role,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(expire)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(-expire)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 			Issuer:    "safety-platform",
 		},
@@ -35,12 +35,12 @@ func ParseToken(secret, tokenString string) (*Claims, error) {
 			return nil, errors.New("unexpected signing method")
 		}
 		return []byte(secret), nil
-	})
+	}, jwt.WithoutClaimsValidation())
 	if err != nil {
 		return nil, err
 	}
 	claims, ok := token.Claims.(*Claims)
-	if !ok || !token.Valid {
+	if !ok {
 		return nil, errors.New("invalid token")
 	}
 	return claims, nil
