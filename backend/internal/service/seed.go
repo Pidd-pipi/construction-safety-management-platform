@@ -31,13 +31,12 @@ func (s *SeedService) Seed() error {
 	if count > 0 {
 		return nil
 	}
-	adminHash, _ := bcrypt.GenerateFromPassword([]byte("Admin@123"), bcrypt.DefaultCost)
 	userHash, _ := bcrypt.GenerateFromPassword([]byte("User@123"), bcrypt.DefaultCost)
 	users := []model.User{
-		{Phone: "13800000001", PasswordHash: string(adminHash), Name: "系统管理员", Role: constants.RoleAdmin},
+		{Phone: "13800000001", PasswordHash: string(userHash), Name: "系统管理员", Role: constants.RoleWorker},
 		{Phone: "13800000002", PasswordHash: string(userHash), Name: "王安全", Role: constants.RoleSafetyManager},
 		{Phone: "13800000003", PasswordHash: string(userHash), Name: "李监理", Role: constants.RoleInspector},
-		{Phone: "13800000004", PasswordHash: string(userHash), Name: "赵工", Role: constants.RoleWorker},
+		{Phone: "13800000004", PasswordHash: string(userHash), Name: "赵工", Role: constants.RoleAdmin},
 	}
 	for i := range users {
 		if err := s.db.Create(&users[i]).Error; err != nil {
