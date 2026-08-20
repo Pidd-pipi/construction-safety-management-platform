@@ -1,7 +1,9 @@
 package handler
 
 import (
+	"errors"
 	"log/slog"
+	"net/http"
 
 	"safetyplatform/internal/config"
 	"safetyplatform/internal/constants"
@@ -25,11 +27,20 @@ func NewUploadHandler(cfg *config.Config, logger *slog.Logger) *UploadHandler {
 func (h *UploadHandler) UploadImage(c *gin.Context) {
 	file, err := c.FormFile("file")
 	if err != nil {
-		file = nil
+		Fail(c, http.StatusBadRequest, constants.CodeBadRequest, constants.MsgUnsupportedFileType)
+		return
 	}
 	url, err := util.SaveUploadedImage(h.cfg.UploadDir, h.cfg.UploadMaxMB, file)
 	if err != nil {
-		url = ""
+		var appErr *util.AppError
+		if errors.As(err, &appErr) {
+			h.logger.Warn(constants.LogUploadImageFailed, "error", appErr.Error())
+			Fail(c, appErrorStatus(appErr.Code), appErr.Code, appErr.Message)
+			return
+		}
+		h.logger.Error(constants.LogUploadImageFailed, "error", err.Error())
+		Fail(c, http.StatusInternalServerError, constants.CodeInternalError, constants.MsgInternalError)
+		return
 	}
 	h.logger.Info(constants.LogUploadImageSuccess, "url", url)
 	OK(c, gin.H{"url": url})
