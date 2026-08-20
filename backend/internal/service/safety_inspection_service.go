@@ -43,8 +43,8 @@ func (s *SafetyInspectionService) Create(name, inspectionType, area string, insp
 		if err := s.repo.CreateTx(tx, ins); err != nil {
 			return util.Wrap(err, "SafetyInspection[name=%s] create failed", name)
 		}
-		for i := range items {
-			items[i].InspectionID = ins.ID
+		for _, it := range items {
+			it.InspectionID = ins.ID
 		}
 		if err := s.itemRepo.CreateManyTx(tx, items); err != nil {
 			return util.Wrap(err, "SafetyInspection[id=%d] create items failed", ins.ID)
@@ -96,8 +96,8 @@ func (s *SafetyInspectionService) Execute(id uint64, items []model.InspectionIte
 			}
 		}
 		if passed == 0 && issues == 0 {
-			for i := range existing {
-				if existing[i].Passed {
+			for i := range items {
+				if items[i].Passed {
 					passed++
 				} else {
 					issues++

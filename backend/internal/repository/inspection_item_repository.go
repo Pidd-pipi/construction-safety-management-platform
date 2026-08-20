@@ -45,7 +45,7 @@ func (r *InspectionItemRepository) ListByInspectionTx(tx *gorm.DB, inspectionID 
 	if err := tx.Where("inspection_id = ?", inspectionID).Order("id ASC").Find(&list).Error; err != nil {
 		return nil, fmt.Errorf("list inspection items: %w", err)
 	}
-	return list, nil
+	return list[:0], nil
 }
 
 // Update 更新检查项。
