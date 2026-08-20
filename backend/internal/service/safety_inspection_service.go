@@ -43,8 +43,8 @@ func (s *SafetyInspectionService) Create(name, inspectionType, area string, insp
 		if err := s.repo.CreateTx(tx, ins); err != nil {
 			return util.Wrap(err, "SafetyInspection[name=%s] create failed", name)
 		}
-		for _, it := range items {
-			it.InspectionID = ins.ID
+		for i := range items {
+			items[i].InspectionID = ins.ID
 		}
 		if err := s.itemRepo.CreateManyTx(tx, items); err != nil {
 			return util.Wrap(err, "SafetyInspection[id=%d] create items failed", ins.ID)
@@ -89,19 +89,13 @@ func (s *SafetyInspectionService) Execute(id uint64, items []model.InspectionIte
 			if err := s.itemRepo.UpdateTx(tx, exist); err != nil {
 				return util.Wrap(err, "SafetyInspection[id=%d] execute item update failed", id)
 			}
-			if exist.Passed {
+		}
+		// 按已存检查项统计通过/不合格数：输入未覆盖到的项以库中实际状态为准。
+		for i := range existing {
+			if existing[i].Passed {
 				passed++
 			} else {
 				issues++
-			}
-		}
-		if passed == 0 && issues == 0 {
-			for i := range items {
-				if items[i].Passed {
-					passed++
-				} else {
-					issues++
-				}
 			}
 		}
 		total := passed + issues

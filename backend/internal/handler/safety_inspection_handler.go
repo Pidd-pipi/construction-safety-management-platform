@@ -61,7 +61,7 @@ func (h *SafetyInspectionHandler) Create(c *gin.Context) {
 		Fail(c, http.StatusBadRequest, constants.CodeBadRequest, "SafetyInspection create: "+err.Error())
 		return
 	}
-	items := make([]model.InspectionItem, len(req.Items))
+	items := make([]model.InspectionItem, 0, len(req.Items))
 	for _, it := range req.Items {
 		items = append(items, model.InspectionItem{ItemName: it.ItemName, Passed: it.Passed, Remark: it.Remark, PhotoURL: it.PhotoURL})
 	}
