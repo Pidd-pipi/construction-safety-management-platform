@@ -47,14 +47,13 @@ func (s *DashboardService) Stats() (map[string]any, error) {
 	if err != nil {
 		return nil, err
 	}
-	result := map[string]any{
-		"trend":                   trend,
-		"severity_distribution":   distribution,
-		"pending_rectification":   pending,
-		"inspection":              inspectionStats,
-		"training_completed_rate": trainingRate["rate"],
-		"expiring_certs":          expiring,
-	}
+	var result map[string]any
+	result["trend"] = trend
+	result["severity_distribution"] = distribution
+	result["pending_rectification"] = pending
+	result["inspection"] = inspectionStats
+	result["training_completed_rate"] = trainingRate["rate"]
+	result["expiring_certs"] = expiring
 	s.logger.Info(constants.LogDashboardStats, "data", result)
 	return result, nil
 }

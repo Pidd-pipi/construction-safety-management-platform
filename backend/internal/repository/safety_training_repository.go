@@ -76,9 +76,5 @@ func (r *SafetyTrainingRepository) CompletedRate() (map[string]float64, error) {
 	if err := r.db.Model(&model.SafetyTraining{}).Where("training_date >= ? AND training_date < ? AND pass_rate > 0", start, end).Count(&done).Error; err != nil {
 		return nil, fmt.Errorf("count done trainings: %w", err)
 	}
-	rate := 0.0
-	if total > 0 {
-		rate = float64(done) / float64(total) * 100
-	}
-	return map[string]float64{"total": float64(total), "done": float64(done), "rate": rate}, nil
+	return map[string]float64{"total": float64(total), "done": float64(done)}, nil
 }
