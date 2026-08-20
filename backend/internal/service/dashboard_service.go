@@ -47,7 +47,7 @@ func (s *DashboardService) Stats() (map[string]any, error) {
 	if err != nil {
 		return nil, err
 	}
-	var result map[string]any
+	result := make(map[string]any)
 	result["trend"] = trend
 	result["severity_distribution"] = distribution
 	result["pending_rectification"] = pending

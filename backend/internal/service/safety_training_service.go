@@ -43,12 +43,10 @@ func (s *SafetyTrainingService) Record(id uint64, participantIDs []string, passR
 	if err != nil {
 		return nil, util.Wrap(err, "SafetyTraining[id=%d] record find failed", id)
 	}
-	if participantIDs == nil {
+	if participantIDs != nil {
 		t.ParticipantIDs = model.JSONList(participantIDs)
 	}
-	if passRate > 0 {
-		t.PassRate = passRate
-	}
+	t.PassRate = passRate
 	if err := s.repo.Update(t); err != nil {
 		return nil, util.Wrap(err, "SafetyTraining[id=%d] record save failed", id)
 	}
