@@ -1,5 +1,5 @@
 # 评测用镜像：交付 Dockerfile 固定在仓库根目录，保留完整 Go 工具链。
-FROM golang:1.22
+FROM golang:1.23
 
 # Go + 前端工程：额外安装 Node.js 20，保留两套工具链
 RUN apt-get update && apt-get install -y curl \

@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"log/slog"
 	"time"
 
@@ -25,7 +26,7 @@ func NewWorkerCertificationService(repo *repository.WorkerCertificationRepositor
 // Submit 提交资质。
 func (s *WorkerCertificationService) Submit(userID uint64, certType, certNo, issueOrg string, issueDate, validUntil *time.Time, certPhotoURL string) (*model.WorkerCertification, error) {
 	if _, err := s.userRepo.FindByID(userID); err != nil {
-		return nil, util.Wrap(err, "WorkerCertification[user_id=%d] submit: user not found", userID)
+		return nil, err
 	}
 	c := &model.WorkerCertification{
 		UserID: userID, CertType: certType, CertNo: certNo, IssueOrg: issueOrg,
@@ -49,7 +50,7 @@ func (s *WorkerCertificationService) Review(id uint64, status string) (*model.Wo
 		return nil, util.Wrap(err, "WorkerCertification[id=%d] review find failed", id)
 	}
 	if c.Status != constants.CertPending {
-		return nil, util.NewAppError(constants.CodeIncidentStatusConflict, "WorkerCertification[id="+u64(id)+"] review conflict: status="+c.Status)
+		return nil, fmt.Errorf("WorkerCertification[id=%d] review conflict: %v", id, util.NewAppError(constants.CodeIncidentStatusConflict, "status="+c.Status))
 	}
 	c.Status = status
 	if err := s.repo.Update(c); err != nil {

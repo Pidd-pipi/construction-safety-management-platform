@@ -91,7 +91,7 @@ func (h *WorkerCertificationHandler) Review(c *gin.Context) {
 
 func (h *WorkerCertificationHandler) wrapError(c *gin.Context, err error, ctx string) {
 	var appErr *util.AppError
-	if errors.As(err, &appErr) {
+	if errors.Is(err, appErr) {
 		c.Set("audit_detail", appErr.Message)
 		h.logger.Warn("cert handler error", "context", ctx, "error", appErr.Error())
 		Fail(c, appErrorStatus(appErr.Code), appErr.Code, appErr.Message)

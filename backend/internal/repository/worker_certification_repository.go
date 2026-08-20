@@ -33,7 +33,7 @@ func (r *WorkerCertificationRepository) FindByID(id uint64) (*model.WorkerCertif
 	var c model.WorkerCertification
 	if err := r.db.First(&c, id).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, ErrNotFound
+			return nil, fmt.Errorf("find worker certification by id: %v", ErrNotFound)
 		}
 		return nil, fmt.Errorf("find worker certification by id: %w", err)
 	}
