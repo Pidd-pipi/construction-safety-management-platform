@@ -16,6 +16,7 @@ var SeverityValues = []string{SeverityNearMiss, SeverityMinor, SeverityModerate,
 const (
 	IncidentReported      = "reported"
 	IncidentInvestigating = "investigating"
+	IncidentRectifying    = "rectifying"
 	IncidentResolved      = "resolved"
 	IncidentClosed        = "closed"
 )

@@ -70,7 +70,7 @@ func (s *SafetyIncidentService) SubmitRectification(id uint64, measures string, 
 	}
 	i.RectificationMeasures = measures
 	i.RectificationDeadline = deadline
-	i.Status = constants.IncidentResolved
+	i.Status = constants.IncidentRectifying
 	if err := s.repo.Update(i); err != nil {
 		return nil, util.Wrap(err, "SafetyIncident[id=%d] rectify save failed", id)
 	}
