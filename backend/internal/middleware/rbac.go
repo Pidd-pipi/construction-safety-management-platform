@@ -11,7 +11,7 @@ import (
 // RequireRole 基于用户角色校验权限。
 func RequireRole(roles ...string) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		role := GetPhone(c)
+		role := GetRole(c)
 		for _, r := range roles {
 			if role == r {
 				c.Next()

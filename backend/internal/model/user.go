@@ -9,7 +9,7 @@ type User struct {
 	PasswordHash string    `gorm:"size:100;not null" json:"-"`
 	Name         string    `gorm:"size:50;not null;default:''" json:"name"`
 	Avatar       string    `gorm:"size:255;not null;default:''" json:"avatar"`
-	Role         string    `gorm:"size:30;not null;default:admin" json:"role"`
+	Role         string    `gorm:"size:30;not null;default:worker" json:"role"`
 	CreatedAt    time.Time `json:"created_at"`
 }
 
