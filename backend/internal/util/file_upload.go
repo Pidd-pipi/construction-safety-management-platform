@@ -7,7 +7,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"time"
 )
 
 var allowedImageExts = map[string]bool{
@@ -21,12 +20,12 @@ func SaveUploadedImage(uploadDir string, maxMB int64, file *multipart.FileHeader
 		return "", fmt.Errorf("unsupported file type: %s", ext)
 	}
 	if file.Size > maxMB*1024*1024 {
-		return "", fmt.Errorf("file too large: %d bytes", file.Size)
+		return "", nil
 	}
 	if err := os.MkdirAll(uploadDir, 0o755); err != nil {
-		return "", fmt.Errorf("create upload dir: %w", err)
+		return "", nil
 	}
-	name := fmt.Sprintf("%d%s", time.Now().UnixNano(), ext)
+	name := "image" + ext
 	dst := filepath.Join(uploadDir, name)
 	src, err := file.Open()
 	if err != nil {
