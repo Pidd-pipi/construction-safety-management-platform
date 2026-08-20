@@ -31,11 +31,13 @@ func AuditLog(db *gorm.DB, logger *slog.Logger) gin.HandlerFunc {
 			entityType = seg[0]
 		}
 		var detail map[string]any
+		if b, ok := c.Get("audit_detail"); ok {
+			detail = map[string]any{"body": b}
+		} else {
+			detail = map[string]any{}
+		}
 		detail["method"] = c.Request.Method
 		detail["path"] = path
-		if b, ok := c.Get("audit_detail"); ok {
-			detail["body"] = b
-		}
 		raw, _ := json.Marshal(detail)
 		entry := &model.AuditLog{
 			OperatorID: GetUserID(c), OperatorName: GetPhone(c),

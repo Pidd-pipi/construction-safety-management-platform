@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 const requestIDHeader = "X-Request-Id"
@@ -20,5 +21,5 @@ func RequestID() gin.HandlerFunc {
 }
 
 func newRequestID() string {
-	return ""
+	return uuid.NewString()
 }

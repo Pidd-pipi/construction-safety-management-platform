@@ -10,9 +10,11 @@ import (
 type JSONList []string
 
 // Value 实现 driver.Valuer。
+// nil 或空列表序列化为 JSON 空数组 "[]"，而不是 SQL NULL，
+// 避免 JSON 列出现 NULL 后被后续 Scan 复用同一接收变量造成跨行串场。
 func (j JSONList) Value() (driver.Value, error) {
 	if j == nil {
-		return nil, nil
+		j = JSONList{}
 	}
 	return json.Marshal(j)
 }
