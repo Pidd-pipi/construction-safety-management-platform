@@ -74,10 +74,9 @@ func (r *Router) Setup() *gin.Engine {
 	return engine
 }
 
-// registerAuthRoutes 登录注册（限流）。
+// registerAuthRoutes 登录注册。
 func (r *Router) registerAuthRoutes(g *gin.RouterGroup) {
 	auth := g.Group("/auth")
-	auth.Use(r.limiter.Limit())
 	auth.POST("/register", r.user.Register)
 	auth.POST("/login", r.user.Login)
 }

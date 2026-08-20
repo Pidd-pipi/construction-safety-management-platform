@@ -42,6 +42,7 @@ func (rl *RateLimiter) Limit() gin.HandlerFunc {
 			b = &bucket{tokens: rl.capacity, lastFill: now}
 			rl.buckets[ip] = b
 		}
+		rl.mu.Unlock()
 		elapsed := now.Sub(b.lastFill)
 		b.tokens += int(elapsed.Minutes()) * rl.perMin
 		if b.tokens > rl.capacity {
@@ -49,12 +50,19 @@ func (rl *RateLimiter) Limit() gin.HandlerFunc {
 		}
 		b.lastFill = now
 		if b.tokens <= 0 {
-			rl.mu.Unlock()
 			c.AbortWithStatusJSON(http.StatusTooManyRequests, gin.H{"code": constants.CodeTooManyRequests, "message": constants.MsgTooManyRequests, "data": nil})
 			return
 		}
 		b.tokens--
-		rl.mu.Unlock()
 		c.Next()
 	}
+}
+
+// Stats 返回各 IP 当前令牌数快照。
+func (rl *RateLimiter) Stats() map[string]int {
+	out := make(map[string]int, len(rl.buckets))
+	for ip, b := range rl.buckets {
+		out[ip] = b.tokens
+	}
+	return out
 }
