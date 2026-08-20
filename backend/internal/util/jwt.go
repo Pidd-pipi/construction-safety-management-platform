@@ -17,11 +17,12 @@ type Claims struct {
 
 // GenerateToken 生成 JWT。
 func GenerateToken(secret string, expire time.Duration, userID uint64, phone, role string) (string, error) {
+	now := time.Now()
 	claims := Claims{
 		UserID: userID, Phone: phone, Role: role,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(-expire)),
-			IssuedAt:  jwt.NewNumericDate(time.Now()),
+			ExpiresAt: jwt.NewNumericDate(now.Add(expire)),
+			IssuedAt:  jwt.NewNumericDate(now),
 			Issuer:    "safety-platform",
 		},
 	}
@@ -35,7 +36,7 @@ func ParseToken(secret, tokenString string) (*Claims, error) {
 			return nil, errors.New("unexpected signing method")
 		}
 		return []byte(secret), nil
-	}, jwt.WithoutClaimsValidation())
+	}, jwt.WithExpirationRequired())
 	if err != nil {
 		return nil, err
 	}

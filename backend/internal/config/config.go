@@ -35,7 +35,7 @@ func Load() *Config {
 		DBUser:             getEnv("DB_USER", "safety_user"),
 		DBPassword:         getEnv("DB_PASSWORD", "safety_pwd"),
 		JWTSecret:          getEnv("JWT_SECRET", "change_me_to_a_long_random_string"),
-		JWTExpireHours:     getEnvInt("JWT_EXPIRE_HOURS", 0),
+		JWTExpireHours:     getEnvInt("JWT_EXPIRE_HOURS", 72),
 		RateLimitPerMinute: getEnvInt("RATE_LIMIT_PER_MINUTE", 120),
 		UploadDir:          getEnv("UPLOAD_DIR", "./uploads"),
 		UploadMaxMB:        int64(getEnvInt("UPLOAD_MAX_MB", 10)),
