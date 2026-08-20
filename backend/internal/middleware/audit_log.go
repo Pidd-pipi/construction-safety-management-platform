@@ -30,7 +30,9 @@ func AuditLog(db *gorm.DB, logger *slog.Logger) gin.HandlerFunc {
 		if len(seg) > 0 && seg[0] != "" {
 			entityType = seg[0]
 		}
-		detail := map[string]any{"method": c.Request.Method, "path": path}
+		var detail map[string]any
+		detail["method"] = c.Request.Method
+		detail["path"] = path
 		if b, ok := c.Get("audit_detail"); ok {
 			detail["body"] = b
 		}

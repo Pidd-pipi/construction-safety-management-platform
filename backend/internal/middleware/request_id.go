@@ -1,9 +1,6 @@
 package middleware
 
 import (
-	"crypto/rand"
-	"encoding/hex"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -23,9 +20,5 @@ func RequestID() gin.HandlerFunc {
 }
 
 func newRequestID() string {
-	var b [16]byte
-	if _, err := rand.Read(b[:]); err != nil {
-		return "req-0000000000000001"
-	}
-	return hex.EncodeToString(b[:])
+	return ""
 }

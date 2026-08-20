@@ -1,4 +1,4 @@
-# construction-safety-management-platform
+# safety-platform__009
 
 ## 构建镜像
 
@@ -23,7 +23,7 @@ cd frontend && npm run build   # 构建前端
 
 ## 环境
 
-- 基础镜像: golang:1.22
+- 基础镜像: golang:1.23
 - Go 模块目录: `backend`
 - 依赖已在镜像构建阶段预下载，容器内离线可用。
 - 容器内工作目录: `/app/backend`

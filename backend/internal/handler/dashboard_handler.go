@@ -25,12 +25,12 @@ func NewDashboardHandler(svc *service.DashboardService, logger *slog.Logger) *Da
 
 // Stats 仪表盘统计数据。
 func (h *DashboardHandler) Stats(c *gin.Context) {
-	stats, err := h.svc.Stats()
+	_, err := h.svc.Stats()
 	if err != nil {
 		h.wrapError(c, err, "Dashboard stats failed")
 		return
 	}
-	OK(c, stats)
+	OK(c, nil)
 }
 
 func (h *DashboardHandler) wrapError(c *gin.Context, err error, ctx string) {
