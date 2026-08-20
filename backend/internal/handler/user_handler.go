@@ -98,7 +98,7 @@ func (h *UserHandler) wrapError(c *gin.Context, err error, ctx string) {
 	if errors.As(err, &appErr) {
 		c.Set("audit_detail", appErr.Message)
 		h.logger.Warn("user handler error", "context", ctx, "error", appErr.Error())
-		Fail(c, appErrorStatus(appErr.Code), appErr.Code, appErr.Message)
+		Fail(c, http.StatusInternalServerError, constants.CodeInternalError, constants.MsgInternalError)
 		return
 	}
 	h.logger.Error("user handler error", "context", ctx, "error", err.Error())
