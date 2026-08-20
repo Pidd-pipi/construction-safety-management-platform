@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"log/slog"
 	"strings"
 
@@ -31,7 +32,7 @@ func (s *UserService) Register(phone, password, name, role string) (*model.User,
 	}
 	if _, err := s.repo.FindByPhone(phone); err == nil {
 		return nil, util.NewAppError(constants.CodeUserExists, constants.MsgPhoneExists)
-	} else if err != nil {
+	} else if !errors.Is(err, repository.ErrNotFound) {
 		return nil, util.Wrap(err, "User[phone=%s] register check failed", phone)
 	}
 	if role == "" {
@@ -56,7 +57,8 @@ func (s *UserService) Register(phone, password, name, role string) (*model.User,
 func (s *UserService) Login(secret string, expireHours int, phone, password string) (string, *model.User, error) {
 	u, err := s.repo.FindByPhone(phone)
 	if err != nil {
-		if err == nil {
+		if errors.Is(err, repository.ErrNotFound) {
+			s.logger.Warn(constants.LogUserLoginFailed, "phone", phone)
 			return "", nil, util.NewAppError(constants.CodeInvalidCredentials, constants.MsgInvalidCredentials)
 		}
 		return "", nil, util.Wrap(err, "User[phone=%s] login find failed", phone)
@@ -77,6 +79,9 @@ func (s *UserService) Login(secret string, expireHours int, phone, password stri
 func (s *UserService) GetByID(id uint64) (*model.User, error) {
 	u, err := s.repo.FindByID(id)
 	if err != nil {
+		if errors.Is(err, repository.ErrNotFound) {
+			return nil, util.NewAppError(constants.CodeNotFound, constants.MsgNotFound)
+		}
 		return nil, util.Wrap(err, "User[id=%d] get failed", id)
 	}
 	return u, nil
